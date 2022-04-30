@@ -39,6 +39,7 @@ public class HelloController {
             Global.currentInput = getBytesFromString(_plaintext);
             Global.currentKey = getBytesFromString(_key);
             Global.currentRound = "Pre Round Transformation";
+            Global.currentRCon = new int[][]{{0x01}, {0x00}, {0x00}, {0x00}};
 
             try {
                 Stage stage = (Stage) encryptBtn.getScene().getWindow();
@@ -58,6 +59,13 @@ public class HelloController {
             int idx = i/2;
             bytes[idx/4][idx%4] = Converter.hexToDecimal(s.substring(i,i+2));
         }
-        return bytes;
+
+        int[][] transform = new int[4][4];
+        for(int i=0;i<4;i++){
+            for(int j=0;j<4;j++)
+                transform[i][j] = bytes[j][i];
+        }
+
+        return transform;
     }
 }
