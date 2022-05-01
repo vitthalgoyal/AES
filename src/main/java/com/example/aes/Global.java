@@ -8,8 +8,8 @@ import javafx.stage.Stage;
 import java.util.Objects;
 
 public class Global {
-    public static String plaintext;
-    public static String key;
+    public static int[][] plaintext;
+    public static int[][] key;
 
     public static int[][] currentInput;
     public static int[][] currentKey;

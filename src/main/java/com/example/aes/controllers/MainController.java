@@ -38,10 +38,10 @@ public class MainController {
             Encoder encoder = new Encoder();
             KeyExpansion keyExpansion = new KeyExpansion();
 
-            Global.plaintext = _plaintext;
-            Global.key = _key;
-            Global.currentKey = getBytesFromString(_key);
-            Global.currentInput = encoder.addRoundKey(getBytesFromString(_plaintext));
+            Global.plaintext = getBytesFromString(_plaintext);
+            Global.key = getBytesFromString(_key);
+            Global.currentKey = Global.key;
+            Global.currentInput = encoder.addRoundKey(Global.plaintext);
             Global.currentRound = 1;
             Global.currentRCon = new int[][]{{0x01}, {0x00}, {0x00}, {0x00}};
             keyExpansion.expandKey();
