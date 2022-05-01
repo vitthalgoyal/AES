@@ -3,6 +3,7 @@ package com.example.aes.controllers;
 import com.example.aes.Converter;
 import com.example.aes.Encoder;
 import com.example.aes.Global;
+import com.example.aes.KeyExpansion;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -23,6 +24,9 @@ public class MixColumnController implements Initializable {
     GridPane outputState;
 
     @FXML
+    GridPane constantMatrix;
+
+    @FXML
     Button nextStage;
 
     @FXML
@@ -31,17 +35,26 @@ public class MixColumnController implements Initializable {
     @FXML
     Button viewBtn;
 
-    int[][] output;
+    @FXML
+    Label roundNo;
+
+    private Encoder encoder;
+    private int[][] output;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        if(Global.currentRound == 0){
+            roundNo.setText("Pre Round Transformation");
+        }else
+            roundNo.setText("Round No : " + Global.currentRound);
+
         for(int i=0;i<4;i++){
             for(int j=0;j<4;j++){
                 inputState.add(new Label(Converter.decimalToHex(Global.currentInput[i][j])),j,i);
             }
         }
 
-        Encoder encoder = new Encoder();
+        encoder = new Encoder();
         output = encoder.mixColumns(Global.currentInput);
 
         for(int i=0;i<4;i++){
@@ -53,7 +66,18 @@ public class MixColumnController implements Initializable {
 
     @FXML
     void nextRound(ActionEvent event) {
+        KeyExpansion keyExpansion = new KeyExpansion();
+        output = encoder.addRoundKey(output);
 
+        Global.currentRound++;
+        keyExpansion.expandKey();
+        Global.currentInput = output;
+
+        Stage stage = (Stage) inputState.getScene().getWindow();
+        if(Global.currentRound == 11)
+            Global.nextStage(stage,"output.fxml");
+        else
+            Global.nextStage(stage,"subbyte_transformation.fxml");
     }
 
     @FXML
@@ -65,7 +89,30 @@ public class MixColumnController implements Initializable {
 
     @FXML
     void viewMatrix(ActionEvent event) {
+        constantMatrix.setVisible(true);
+        int[][] matrix = new int[4][4];
+        matrix[0][0] = 0x02;
+        matrix[0][1] = 0x03;
+        matrix[0][2] = 0x01;
+        matrix[0][3] = 0x01;
+        matrix[1][0] = 0x01;
+        matrix[1][1] = 0x02;
+        matrix[1][2] = 0x03;
+        matrix[1][3] = 0x01;
+        matrix[2][0] = 0x01;
+        matrix[2][1] = 0x01;
+        matrix[2][2] = 0x02;
+        matrix[2][3] = 0x03;
+        matrix[3][0] = 0x03;
+        matrix[3][1] = 0x01;
+        matrix[3][2] = 0x01;
+        matrix[3][3] = 0x02;
 
+        for(int i=0;i<4;i++){
+            for(int j=0;j<4;j++){
+                constantMatrix.add(new Label(""+matrix[i][j]),j,i);
+            }
+        }
     }
 
 }

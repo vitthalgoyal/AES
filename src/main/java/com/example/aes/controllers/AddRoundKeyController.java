@@ -24,6 +24,9 @@ public class AddRoundKeyController implements Initializable {
     GridPane outputState;
 
     @FXML
+    GridPane roundKey;
+
+    @FXML
     Button nextStage;
 
     @FXML
@@ -32,10 +35,18 @@ public class AddRoundKeyController implements Initializable {
     @FXML
     Button viewBtn;
 
+    @FXML
+    Label roundNo;
+
     int[][] output;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        if(Global.currentRound == 0){
+            roundNo.setText("Pre Round Transformation");
+        }else
+            roundNo.setText("Round No : " + Global.currentRound);
+
         for(int i=0;i<4;i++){
             for(int j=0;j<4;j++){
                 inputState.add(new Label(Converter.decimalToHex(Global.currentInput[i][j])),j,i);
@@ -57,9 +68,13 @@ public class AddRoundKeyController implements Initializable {
         Global.currentInput = output;
         KeyExpansion keyExpansion = new KeyExpansion();
         keyExpansion.expandKey();
+        Global.currentRound++;
 
         Stage stage = (Stage) inputState.getScene().getWindow();
-        Global.nextStage(stage,"subbyte_transformation.fxml");
+        if(Global.currentRound == 11)
+            Global.nextStage(stage,"output.fxml");
+        else
+            Global.nextStage(stage,"subbyte_transformation.fxml");
     }
 
     @FXML
@@ -69,7 +84,11 @@ public class AddRoundKeyController implements Initializable {
 
     @FXML
     void viewMatrix(ActionEvent event) {
-
+        for(int i=0;i<4;i++){
+            for(int j=0;j<4;j++){
+                roundKey.add(new Label(Converter.decimalToHex(Global.currentKey[i][j])),j,i);
+            }
+        }
     }
 
 }
