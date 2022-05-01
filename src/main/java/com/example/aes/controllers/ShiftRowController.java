@@ -62,7 +62,8 @@ public class ShiftRowController implements Initializable {
     @FXML
     public void nextRound(ActionEvent event) {
         KeyExpansion keyExpansion = new KeyExpansion();
-        output = encoder.mixColumns(output);
+        if(Global.currentRound < 10)
+              output = encoder.mixColumns(output);
         output = encoder.addRoundKey(output);
 
         Global.currentRound++;
@@ -80,7 +81,10 @@ public class ShiftRowController implements Initializable {
     public void nextStage(ActionEvent event) {
         Global.currentInput = output;
         Stage stage = (Stage) inputState.getScene().getWindow();
-        Global.nextStage(stage,"mix_column.fxml");
+        if(Global.currentRound == 10)
+            Global.nextStage(stage,"add_round_key.fxml");
+        else
+            Global.nextStage(stage,"mix_column.fxml");
     }
 }
 

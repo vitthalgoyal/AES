@@ -130,10 +130,11 @@ public class Encoder {
     public int[][] addRoundKey(int[][] mat){
         for(int i=0;i<4;i++){
             for(int j=0;j<4;j++){
-                mat[i][j] = (mat[i][j] + Global.currentKey[i][j])%256;
+                mat[i][j] = (mat[i][j]^Global.currentKey[i][j])%256;
             }
         }
-
+       // 00041214120412000C00131108231919
+       // 2475A2B33475568831E2120013AA5487
         return mat;
     }
 

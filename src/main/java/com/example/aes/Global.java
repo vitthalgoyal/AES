@@ -18,7 +18,7 @@ public class Global {
 
     public static void nextStage(Stage stage,String path){
         try {
-            Parent root = FXMLLoader.load(Objects.requireNonNull(HelloApplication.class.getResource(path)));
+            Parent root = FXMLLoader.load(Objects.requireNonNull(MainApplication.class.getResource(path)));
             stage.setScene(new Scene(root,800,600));
             stage.setTitle("AES Visualizer");
             stage.show();

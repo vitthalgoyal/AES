@@ -84,6 +84,7 @@ public class AddRoundKeyController implements Initializable {
 
     @FXML
     void viewMatrix(ActionEvent event) {
+        roundKey.setVisible(true);
         for(int i=0;i<4;i++){
             for(int j=0;j<4;j++){
                 roundKey.add(new Label(Converter.decimalToHex(Global.currentKey[i][j])),j,i);
