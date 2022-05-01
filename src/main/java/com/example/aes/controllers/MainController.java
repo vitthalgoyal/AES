@@ -1,8 +1,6 @@
 package com.example.aes.controllers;
 
-import com.example.aes.Converter;
-import com.example.aes.Global;
-import com.example.aes.HelloApplication;
+import com.example.aes.*;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -10,13 +8,12 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
 import java.util.Random;
 
-public class HelloController {
+public class MainController {
 
     @FXML
     public TextField plaintext;
@@ -38,16 +35,20 @@ public class HelloController {
             alert.setContentText("Invalid data.");
             alert.showAndWait();
         }else{
-            Global.plaintext = _plaintext;
-            Global.key = _key;
-            Global.currentInput = getBytesFromString(_plaintext);
-            Global.currentKey = getBytesFromString(_key);
-            Global.currentRound = 0;
+            Encoder encoder = new Encoder();
+            KeyExpansion keyExpansion = new KeyExpansion();
+
+            Global.plaintext = getBytesFromString(_plaintext);
+            Global.key = getBytesFromString(_key);
+            Global.currentKey = Global.key;
+            Global.currentInput = encoder.addRoundKey(Global.plaintext);
+            Global.currentRound = 1;
             Global.currentRCon = new int[][]{{0x01}, {0x00}, {0x00}, {0x00}};
+            keyExpansion.expandKey();
 
             try {
                 Stage stage = (Stage) encryptBtn.getScene().getWindow();
-                Parent root = FXMLLoader.load(HelloApplication.class.getResource("subbyte_transformation.fxml"));
+                Parent root = FXMLLoader.load(MainApplication.class.getResource("subbyte_transformation.fxml"));
                 stage.setTitle("AES Encryption Visualizer");
                 stage.setScene(new Scene(root,900,600));
                 stage.show();

@@ -1,6 +1,6 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="Application" type="Application" factoryName="Application">
-    <option name="MAIN_CLASS_NAME" value="com.example.aes.HelloApplication" />
+    <option name="MAIN_CLASS_NAME" value="com.example.aes.MainApplication" />
     <module name="AES" />
     <method v="2">
       <option name="Make" enabled="true" />
