@@ -35,8 +35,10 @@ public class KeyExpansion {
         //subWord
         for(int i=0;i<4;i++){
             int curr = wp[i][0];
-            int row = curr>>4;
-            int col = curr&15;
+            int row = (curr>>>4);
+            int col = (curr&15);
+            if(row>15)
+                System.out.println(curr);
             wp[i][0] = s_box[row][col];
         }
 
@@ -46,7 +48,7 @@ public class KeyExpansion {
 
         //Updating RCon for next round.
         for(int i=0;i<4;i++)
-            Global.currentRCon[i][0] = 2*Global.currentRCon[i][0];
+            Global.currentRCon[i][0] = (2*Global.currentRCon[i][0])%256;
 
         return wp;
     }

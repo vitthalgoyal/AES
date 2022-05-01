@@ -14,6 +14,8 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
+import java.util.Random;
+
 public class HelloController {
 
     @FXML
@@ -38,7 +40,7 @@ public class HelloController {
         }else{
             Global.currentInput = getBytesFromString(_plaintext);
             Global.currentKey = getBytesFromString(_key);
-            Global.currentRound = "Pre Round Transformation";
+            Global.currentRound = 0;
             Global.currentRCon = new int[][]{{0x01}, {0x00}, {0x00}, {0x00}};
 
             try {
@@ -67,5 +69,23 @@ public class HelloController {
         }
 
         return transform;
+    }
+
+    @FXML
+    public void randomGenerate(ActionEvent event){
+        Random random = new Random();
+        StringBuilder _plaintext = new StringBuilder();
+        StringBuilder _key= new StringBuilder();
+        for(int i=0;i<16;i++){
+            int a = Math.abs(random.nextInt(256));
+            int b = Math.abs(random.nextInt(256));
+            _plaintext.append(Converter.decimalToHex(a));
+            _plaintext.append(" ");
+            _key.append(Converter.decimalToHex(b));
+            _key.append(" ");
+        }
+
+        plaintext.setText(_plaintext.toString());
+        key.setText(_key.toString());
     }
 }
