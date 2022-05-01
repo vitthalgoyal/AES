@@ -38,6 +38,8 @@ public class HelloController {
             alert.setContentText("Invalid data.");
             alert.showAndWait();
         }else{
+            Global.plaintext = _plaintext;
+            Global.key = _key;
             Global.currentInput = getBytesFromString(_plaintext);
             Global.currentKey = getBytesFromString(_key);
             Global.currentRound = 0;
