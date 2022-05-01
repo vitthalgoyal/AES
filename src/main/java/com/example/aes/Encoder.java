@@ -85,21 +85,27 @@ public class Encoder {
     /**
      *  Multiplication over Finite Fields GF(2^8)
      */
-    private int GFMul(int a, int b) {
-        int p = 0;
-        int hi_bit_set;
-        for (int counter = 0; counter < 8; counter++) {
-            if ((b & (int)1) != 0) {
-                p ^= a;
-            }
-            hi_bit_set = (int) (a & (int)(0x80));
-            a <<= 1;
-            if (hi_bit_set != 0) {
-                a ^= 0x1b; /* x^8 + x^4 + x^3 + x + 1 */
-            }
-            b >>= 1;
+    //the below function was ripped from http://people.eku.edu/styere/Encrypt/JS-AES.html
+    public static int GFMul(int a, int b)	{
+        int res = 0;
+        while( a > 0 )	{
+            if ( (a&1) != 0 )
+                res = res ^ b;		// "add" to the result
+            a >>>= 1;			// shift a to get next higher-order bit
+            b <<= 1;			// shift multiplier also
         }
-        return p;
+        // now reduce it modulo x**8 + x**4 + x**3 + x + 1
+        int hbit = 0x10000;		// bit to test if we need to take action
+        int modulus = 0x11b00;	// modulus - XOR by this to change value
+        while( hbit >= 0x100 )	{
+            if ( (res & hbit) != 0 )		// if the high-order bit is set
+                res ^= modulus;	// XOR with the modulus
+
+            // prepare for the next loop
+            hbit >>= 1;
+            modulus >>= 1;
+        }
+        return res;
     }
 
     public int [][] mixColumns(int[][] mat)
