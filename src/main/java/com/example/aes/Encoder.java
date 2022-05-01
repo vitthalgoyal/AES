@@ -1,9 +1,5 @@
 package com.example.aes;
 
-import java.util.BitSet;
-
-
-
 public class Encoder {
 
     // Sbox declaration
@@ -26,16 +22,18 @@ public class Encoder {
         {0xE1, 0xF8, 0x98, 0x11, 0x69, 0xD9, 0x8E, 0x94, 0x9B, 0x1E, 0x87, 0xE9, 0xCE, 0x55, 0x28, 0xDF},
         {0x8C, 0xA1, 0x89, 0x0D, 0xBF, 0xE6, 0x42, 0x68, 0x41, 0x99, 0x2D, 0x0F, 0xB0, 0x54, 0xBB, 0x16}
     };
-    int key[];
-    int plain[];
+    int[] key;
+    int[] plain;
     
-    int mat[][];
+    int[][] mat;
     public Encoder(int[] key, int[] plain) {
         this.key = key;
         this.plain = plain;
         
         setMatrix();
     }
+
+    public Encoder(){}
 
     private void setMatrix() {
     }
@@ -45,7 +43,7 @@ public class Encoder {
      *  Subint Transformation
      *  S Box Conversion - The first four bits are line numbers and the last four bits are column numbers
      */
-    int[][] SubBytes(int mat[][])
+    public int[][] subBytes(int[][] mat)
     {
 
         for(int i=0;i<4;i++)
@@ -53,8 +51,8 @@ public class Encoder {
             for(int j=0;j<4;j++)
             {
                 int curr = mat[i][j];
-                int row = curr>>4;
-                int col = curr&15;
+                int row = (curr>>>4);
+                int col = (curr&15);
                 mat[i][j] = S_Box[row][col];
             }
         }
@@ -68,26 +66,16 @@ public class Encoder {
      *  Third 2 left shift
      *  Fourth 3 left shift
      */
-    int[][] ShiftRows(int mat[][])
+    public int[][] shiftRows(int[][] mat)
     {
-        //The second line circle moves one bit to the left
-        int temp = mat[1][0];
-        for(int i=0;i<3;i++)
-            mat[1][i]=mat[1][i+1];
-        mat[1][3]=temp;
-        //The third line circle moves two places to the left
-        int temp1 = mat[1][0];
-        int temp2 = mat[1][1];
-        for(int i=0;i<2;i++)
-            mat[1][i]=mat[1][i+2];
-        mat[1][2]=temp1;
-        mat[1][3]=temp2;
-        //The fourth line moves three left circles
-        int temp3 = mat[1][3];
-        for(int i=3;i>=0;i--)
-            mat[1][i]=mat[1][i-1];
-        mat[1][0]=temp3;
-        return mat;
+        int[][] output = new int[4][4];
+        for(int i=0;i<4;i++){
+            for(int j=0;j<4;j++){
+                output[i][j] = mat[i][(j+i)%4];
+            }
+        }
+
+        return output;
     }
 
     /**
@@ -97,7 +85,7 @@ public class Encoder {
     /**
      *  Multiplication over Finite Fields GF(2^8)
      */
-    int GFMul(int a, int b) {
+    private int GFMul(int a, int b) {
         int p = 0;
         int hi_bit_set;
         for (int counter = 0; counter < 8; counter++) {
@@ -114,7 +102,7 @@ public class Encoder {
         return p;
     }
 
-    int [][] mixColumns(int mat[][])
+    public int [][] mixColumns(int[][] mat)
     {
         for(int i=0;i<4;i++)
         {
@@ -128,6 +116,16 @@ public class Encoder {
             mat[1][i] = (int) (arr[0] ^ GFMul((int)0x02, arr[1]) ^ GFMul((int)0x03, arr[2]) ^ arr[3]);
             mat[2][i] = (int) (arr[0] ^ arr[1] ^ GFMul((int)0x02, arr[2]) ^ GFMul((int)0x03, arr[3]));
             mat[3][i] = (int) (GFMul((int)0x03, arr[0]) ^ arr[1] ^ arr[2] ^ GFMul((int)0x02, arr[3]));
+        }
+
+        return mat;
+    }
+
+    public int[][] addRoundKey(int[][] mat){
+        for(int i=0;i<4;i++){
+            for(int j=0;j<4;j++){
+                mat[i][j] = (mat[i][j] + Global.currentKey[i][j])%256;
+            }
         }
 
         return mat;
